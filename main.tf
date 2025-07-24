@@ -10,7 +10,7 @@ resource "oci_core_instance" "haproxy" {
 
   source_details {
     source_type = "image"
-    source_id   = data.oci_core_images.oracle_linux_latest.images[0].id
+    source_id = data.oci_core_images.ubuntu_latest.images[0].id
   }
 
   metadata = {
@@ -34,10 +34,15 @@ data "template_file" "cloud_init" {
   }
 }
 
-data "oci_core_images" "oracle_linux_latest" {
-  compartment_id = var.compartment_id
-  operating_system = "Oracle Linux"
-  sort_by = "TIMECREATED"
-  sort_order = "DESC"
-  shape = var.shape
+data "oci_core_images" "ubuntu_latest" {
+  compartment_id   = var.compartment_id
+  operating_system = "Canonical Ubuntu"
+  sort_by          = "TIMECREATED"
+  sort_order       = "DESC"
+  shape            = var.shape
+
+  filter {
+    name   = "display_name"
+    values = ["Canonical-Ubuntu-24.04-*"]
+  }
 }
