@@ -30,6 +30,20 @@ EOC
   }
 }
 
+data "oci_core_images" "ubuntu_latest" {
+  compartment_id   = var.compartment_id
+  operating_system = "Canonical Ubuntu"
+  sort_by          = "TIMECREATED"
+  sort_order       = "DESC"
+  shape            = var.shape
+
+  filter {
+    name   = "display_name"
+    values = ["Canonical-Ubuntu-24.04-2025.05.20-0"]
+  }
+}
+
+
 resource "oci_core_instance" "haproxy" {
   availability_domain = var.availability_domain
   compartment_id      = var.compartment_id
