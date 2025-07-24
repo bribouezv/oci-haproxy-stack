@@ -7,8 +7,8 @@ runcmd:
   - echo "==> Writing haproxy config..."
   - |
     cat > /etc/haproxy/haproxy.cfg <<'EOF'
-    ${haproxy_config}
-    EOF
+${haproxy_config}
+EOF
 
   - systemctl enable haproxy
   - systemctl restart haproxy
