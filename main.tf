@@ -28,10 +28,6 @@ resource "oci_core_instance" "haproxy" {
       haproxy_config = local.haproxy_config
     }))
   }
-
-  defined_tags = {
-    "Oracle-Tags.CreatedBy" = "benjamin"
-  }
 }
 
 data "oci_core_images" "ubuntu_latest" {
@@ -43,6 +39,6 @@ data "oci_core_images" "ubuntu_latest" {
 
   filter {
     name   = "display_name"
-    values = ["Canonical-Ubuntu-24.04-*"]
+    values = ["Canonical-Ubuntu-24.04-2025.05.20-0"]
   }
 }
