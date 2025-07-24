@@ -5,6 +5,31 @@ locals {
   })
 }
 
+data "template_cloudinit_config" "haproxy_init" {
+  gzip          = false
+  base64_encode = true
+
+  part {
+    filename     = "haproxy-setup.sh"
+    content_type = "text/x-shellscript"
+    content      = <<-EOF
+      #!/bin/bash
+      echo "==> Installing HAProxy"
+      apt-get update
+      apt-get install -y haproxy
+
+      echo "==> Writing config"
+      cat <<EOC > /etc/haproxy/haproxy.cfg
+${replace(local.haproxy_config, "$", "$$")}
+EOC
+
+      echo "==> Starting HAProxy"
+      systemctl enable haproxy
+      systemctl restart haproxy
+    EOF
+  }
+}
+
 resource "oci_core_instance" "haproxy" {
   availability_domain = var.availability_domain
   compartment_id      = var.compartment_id
@@ -13,8 +38,8 @@ resource "oci_core_instance" "haproxy" {
   display_name = "haproxy-instance"
 
   create_vnic_details {
-    subnet_id         = var.subnet_id
-    assign_public_ip  = true
+    subnet_id        = var.subnet_id
+    assign_public_ip = true
   }
 
   source_details {
@@ -24,21 +49,6 @@ resource "oci_core_instance" "haproxy" {
 
   metadata = {
     ssh_authorized_keys = var.ssh_public_key
-    user_data = base64encode(templatefile("${path.module}/cloud-init/haproxy.yml", {
-    haproxy_config = local.haproxy_config
-    }))
-  }
-}
-
-data "oci_core_images" "ubuntu_latest" {
-  compartment_id   = var.compartment_id
-  operating_system = "Canonical Ubuntu"
-  sort_by          = "TIMECREATED"
-  sort_order       = "DESC"
-  shape            = var.shape
-
-  filter {
-    name   = "display_name"
-    values = ["Canonical-Ubuntu-24.04-2025.05.20-0"]
+    user_data           = data.template_cloudinit_config.haproxy_init.rendered
   }
 }
