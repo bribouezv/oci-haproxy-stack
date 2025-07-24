@@ -14,6 +14,6 @@ frontend https
 
 
 backend nodes_https
-%{ for ip in backend_ips ~}
+%{ for ip in jsondecode(backend_ips) ~}
     server node-${replace(ip, ".", "-")} ${ip}:${https_port} check ssl verify none
 %{ endfor ~}
