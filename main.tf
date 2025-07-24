@@ -24,8 +24,8 @@ resource "oci_core_instance" "haproxy" {
 
   metadata = {
     ssh_authorized_keys = var.ssh_public_key
-    user_data           = base64encode(templatefile("${path.module}/cloud-init/haproxy.yml", {
-      haproxy_config = local.haproxy_config
+    user_data = base64encode(templatefile("${path.module}/cloud-init/haproxy.yml", {
+    haproxy_config = indent(6, local.haproxy_config)
     }))
   }
 }
