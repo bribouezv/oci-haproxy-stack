@@ -22,7 +22,7 @@ resource "oci_core_instance" "haproxy" {
 data "template_file" "haproxy_config" {
   template = file("${path.module}/templates/haproxy.cfg.tpl")
   vars = {
-    backend_ips = join(",", var.haproxy_backend_ips)
+    backend_ips = var.haproxy_backend_ips
     https_port  = var.haproxy_https_nodeport
   }
 }

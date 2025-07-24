@@ -7,7 +7,7 @@ default = "VM.Standard.E2.1.Micro"
 variable "ssh_public_key" {}
 variable "haproxy_backend_ips" {
   type        = list(string)
-  description = "List of backend IP addresses"
+  description = "List of backend IP addresses (Remove : ['0.0.0.0/0'])"
   default = ["0.0.0.0/0"]
 }
 variable "haproxy_https_nodeport" {
