@@ -1,0 +1,14 @@
+#cloud-config
+package_update: true
+package_upgrade: true
+packages:
+  - haproxy
+
+write_files:
+  - path: /etc/haproxy/haproxy.cfg
+    content: |
+      ${haproxy_config}
+
+runcmd:
+  - systemctl enable haproxy
+  - systemctl restart haproxy
