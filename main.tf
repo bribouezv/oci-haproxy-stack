@@ -19,10 +19,15 @@ resource "oci_core_instance" "haproxy" {
   }
 }
 
+locals {
+  haproxy_backend_ips = split(",", var.haproxy_backend_ips_raw)
+}
+
+
 data "template_file" "haproxy_config" {
   template = file("${path.module}/templates/haproxy.cfg.tpl")
   vars = {
-    backend_ips = join(",", var.haproxy_backend_ips)
+    backend_ips = join(",", local.haproxy_backend_ips)
     https_port  = var.haproxy_node_ports.https
   }
 }
