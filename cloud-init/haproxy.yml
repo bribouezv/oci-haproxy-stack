@@ -6,7 +6,9 @@ packages:
 
 write_files:
   - path: /etc/haproxy/haproxy.cfg
+    permissions: '0644'
     content: |
+      
       ${haproxy_config}
 
 runcmd:

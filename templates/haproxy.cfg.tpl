@@ -12,8 +12,7 @@ frontend https
     bind *:443
     default_backend nodes_https
 
-
 backend nodes_https
-%{ for ip in jsondecode(backend_ips) ~}
+%{ for ip in backend_ips ~}
     server node-${replace(ip, ".", "-")} ${ip}:${https_port} check ssl verify none
 %{ endfor ~}
