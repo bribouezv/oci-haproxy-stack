@@ -10,23 +10,11 @@ data "template_cloudinit_config" "haproxy_init" {
   base64_encode = true
 
   part {
-    filename     = "haproxy-setup.sh"
+    filename     = "haproxy-init.sh"
     content_type = "text/x-shellscript"
-    content      = <<-EOF
-      #!/bin/bash
-      echo "==> Installing HAProxy"
-      apt-get update
-      apt-get install -y haproxy
-
-      echo "==> Writing config"
-      cat <<EOC > /etc/haproxy/haproxy.cfg
-${replace(local.haproxy_config, "$", "$$")}
-EOC
-
-      echo "==> Starting HAProxy"
-      systemctl enable haproxy
-      systemctl restart haproxy
-    EOF
+    content      = templatefile("${path.module}/templates/cloudinit.tpl", {
+      haproxy_config = base64encode(local.haproxy_config)
+    })
   }
 }
 
